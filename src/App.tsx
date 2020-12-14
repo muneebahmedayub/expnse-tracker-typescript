@@ -20,18 +20,7 @@ function App() {
   const classes = useStyles()
 
   const [transactions, setTransactions] = useState<TransactionType[]>([
-    {
-      id: Math.floor(Math.random() * 1000000),
-      description: 'Income',
-      amount: 100,
-      income: true
-    },
-    {
-      id: Math.floor(Math.random() * 1000000),
-      description: 'Expense',
-      amount: 200,
-      income: false
-    },
+    
   ])
 
   const handleDelete = (id: number) => {  
