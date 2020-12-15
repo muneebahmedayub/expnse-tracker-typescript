@@ -74,7 +74,6 @@ const Info: React.FC<InfoProp> = ({ transactions, setTransactions }) => {
     }
 
     return (
-        <div>
             <Card className='info'>
                 <CardContent>
                     <Grid container spacing={2}>
@@ -128,7 +127,6 @@ const Info: React.FC<InfoProp> = ({ transactions, setTransactions }) => {
                     </div>
                 </CardContent>
             </Card>
-        </div>
     )
 }
 
