@@ -17,6 +17,17 @@
   overflow: hidden;
 }
 
+.balance-container {
+  position: sticky;
+  top: 0;
+}
+
+@media screen and (max-width: 980px) {
+  .balance-container {
+    position: static;
+  }
+}
+
 .current-balance {
   height: 100px;
   padding: 10px;

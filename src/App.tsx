@@ -127,7 +127,7 @@ function App() {
       <div className="App">
         <Header />
         <Grid className={classes.root} container alignItems='flex-start' justify='space-around'>
-          <Grid item style={{height: '100%', position: "sticky", top: 0}}>
+          <Grid item className="balance-container" style={{height: '100%'}}>
             <Info transactions={transactions} setTransactions={setTransactions} />
           </Grid>
           <Grid item>
