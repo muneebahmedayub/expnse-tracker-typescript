@@ -5,18 +5,20 @@ import { Card, CardContent, Divider, Grid, Typography } from '@material-ui/core'
 import { TransactionHistoryProp } from '../Types';
 import Transaction from './Transaction';
 
-const TransactionHistory: React.FC<TransactionHistoryProp> = ({ transactions, handleDelete }) => {
+const TransactionHistory: React.FC<TransactionHistoryProp> = ({ addToRef, transactions, handleDelete, TransactionHistoryRef }) => {
+
     return (
         <div>
-            <Card className='transaction-history'>
+            <Card className='transaction-history' ref={TransactionHistoryRef}>
                 <CardContent>
                     <Typography variant='h5'>Transaction History</Typography>
                     <Divider />
 
                     <Grid container style={{ marginTop: 10, flexDirection: 'column-reverse' }}>
-                        {transactions.map(({id, description, amount, income}) => {
+                        {transactions.map(({ id, description, amount, income }) => {
                             return (
-                                <Transaction 
+                                <Transaction
+                                    addToRef={addToRef}
                                     key={id}
                                     id={id}
                                     description={description}

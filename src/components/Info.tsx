@@ -1,9 +1,21 @@
 import React, { useState } from 'react'
 //Styles
-import { Box, Button, Card, CardContent, Grid, Paper, Tab, Tabs, TextField, Typography } from '@material-ui/core'
+import { Box, Button, Card, CardContent, Grid, makeStyles, Paper, Tab, Tabs, TextField, Typography } from '@material-ui/core'
 import { InfoProp } from '../Types'
 
-const Info: React.FC<InfoProp> = ({ transactions, setTransactions }) => {
+import {gsap} from 'gsap'
+
+const useStyles = makeStyles({
+    root: {
+        background: 'rgba(255, 255, 255, 0.3)',
+        backdropFilter: 'blur(10px)',
+        borderRadius: '3px 3px 0px 0px'
+    }
+})
+
+const Info: React.FC<InfoProp> = ({ transactions, setTransactions, InfoRef, allRef }) => {
+    const classes = useStyles()
+
     const [value, setValue] = useState<number>(0)
     const [descErr, setDescErr] = useState<boolean>(false)
     const [amtErr, setAmtErr] = useState<boolean>(false)
@@ -43,21 +55,28 @@ const Info: React.FC<InfoProp> = ({ transactions, setTransactions }) => {
 
     const handleClick = () => {
         if (description && amount !== 0) {
-            setTransactions([
-                ...transactions,
-                {
-                    id: Math.floor(Math.random() * 1000000),
-                    description,
-                    amount,
-                    income: value ? false : true
-                }
-            ])
+            const addTransaction = async () => {
+                setTransactions([
+                    ...transactions,
+                    {
+                        id: Math.floor(Math.random() * 1000000),
+                        description,
+                        amount,
+                        income: value ? false : true
+                    }
+                ])
 
-            setDescription('')
-            setAmount(0)
-            
-            setDescErr(false)
-            setAmtErr(false)
+                setDescription('')
+                setAmount(0)
+                
+                setDescErr(false)
+                setAmtErr(false)
+
+                gsap.to(allRef.current, {duration: 0, translateY: '-100%', ease: 'circ.out'})
+                await gsap.to(allRef.current, {duration: 0.3, translateY: '0%', ease: 'circ.out'})
+                
+            }
+            addTransaction()
         }
         else {
             setDescErr(false)
@@ -75,7 +94,7 @@ const Info: React.FC<InfoProp> = ({ transactions, setTransactions }) => {
 
     return (
         <div>
-            <Card className='info'>
+            <Card className='info' ref={InfoRef}>
                 <CardContent>
                     <Grid container spacing={2}>
                         <Grid item xs={12}>
@@ -114,10 +133,10 @@ const Info: React.FC<InfoProp> = ({ transactions, setTransactions }) => {
                         </Grid>
                         <Grid container spacing={2}>
                             <Grid item xs={6}>
-                                <TextField variant='filled' error={descErr} label='Description' value={description} onChange={handleDescription} fullWidth />
+                                <TextField className={classes.root} variant='filled' error={descErr} label='Description' value={description} onChange={handleDescription} fullWidth />
                             </Grid>
                             <Grid item xs={6}>
-                                <TextField variant='filled' error={amtErr} label='Amount' value={amount !== 0 ? amount : ''} type='number' onChange={handleAmount} fullWidth />
+                                <TextField className={classes.root} variant='filled' error={amtErr} label='Amount' value={amount !== 0 ? amount : ''} type='number' onChange={handleAmount} fullWidth />
                             </Grid>
                         </Grid>
                         <Grid container spacing={2}>
