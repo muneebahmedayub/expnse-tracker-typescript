@@ -67,15 +67,22 @@
 }
 
 .info {
-  background: rgba(255, 255, 255, 0.3) !important;
-  backdrop-filter: blur(0.5rem) !important;
-  margin-top: 100px;
+    background: rgba(255, 255, 255, 0.3) !important;
+    backdrop-filter: blur(0.5rem) !important;
+    margin-top: 100px;
 }
 
 .transaction-history {
-  width: 400px;
-  min-height: 400px;
-  background: rgba(255, 255, 255, 0.3) !important;
-  backdrop-filter: blur(0.5rem) !important;
-  margin: 100px 0px;
+    width: 400px;
+    min-height: 400px;
+    background: rgba(255, 255, 255, 0.3) !important;
+    backdrop-filter: blur(0.5rem) !important;
+    margin: 100px 0px;
+    transition: height 0.3s ease;
+}
+
+@media screen and (max-width: 400px) {
+    .transaction-history {
+        width: 100%;
+    }
 }

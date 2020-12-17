@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { RefObject, useEffect, useRef, useState } from 'react';
 //Styles
 import { Grid, makeStyles } from '@material-ui/core';
 import './App.css';
@@ -9,6 +9,10 @@ import TransactionHistory from './components/TransactionHistory';
 //Types
 import { TransactionType } from './Types'
 
+import { gsap } from 'gsap'
+
+import firebase from './firebase'
+
 const useStyles = makeStyles({
   root: {
     flexGrow: 1,
@@ -18,123 +22,74 @@ const useStyles = makeStyles({
 })
 
 function App() {
+  const messaging = firebase.messaging()
+  messaging.requestPermission().then(() => {
+    return messaging.getToken()
+  }).then((token) => {
+    console.log('token', token)
+  })
+
+
   const classes = useStyles()
 
-  const [transactions, setTransactions] = useState<TransactionType[
-    ]>([
-    
-      {
-        id: 846757,
-        description: "Test",
-        amount: 9,
-        income: true
-      },
-      {
-        id: 6193,
-        description: "Test",
-        amount: 8,
-        income: true
-      },
-      {
-        id: 6134593,
-        description: "Test",
-        amount: 8,
-        income: true
-      },
-      {
-        id: 61912433,
-        description: "Test",
-        amount: 8,
-        income: true
-      },
-      {
-        id: 623435679355193,
-        description: "Test",
-        amount: 8,
-        income: true
-      },
-      {
-        id: 63567935134593,
-        description: "Test",
-        amount: 8,
-        income: true
-      },
-      {
-        id: 6359635769145393,
-        description: "Test",
-        amount: 8,
-        income: true
-      },
-      {
-        id: 61945636593563,
-        description: "Test",
-        amount: 8,
-        income: true
-      },
-      {
-        id: 613659853679894563,
-        description: "Test",
-        amount: 8,
-        income: true
-      },
-      {
-        id: 61635835684563,
-        description: "Test",
-        amount: 8,
-        income: true
-      },
-      {
-        id: 61945365893568763,
-        description: "Test",
-        amount: 8,
-        income: true
-      },
-      {
-        id: 6194586745679834563,
-        description: "Test",
-        amount: 8,
-        income: true
-      },
-      {
-        id: 61945678456784563,
-        description: "Test",
-        amount: 8,
-        income: true
-      },
-      {
-        id: 6194856465784563,
-        description: "Test",
-        amount: 8,
-        income: true
-      },
-      {
-        id: 6194563,
-        description: "Test",
-        amount: 8,
-        income: true
-      }
+
+  const [transactions, setTransactions] = useState<TransactionType[]>([
+   
   ])
 
-  const handleDelete = (id: number) => {  
-    setTransactions(transactions.filter((transaction) => {
-      return transaction.id !== id
-    }))
+  const allRef = useRef<HTMLDivElement[]>([])
+  const addToRef = (el: RefObject<HTMLDivElement>) => {
+    if (el.current && !allRef.current.includes(el.current)) {
+      allRef.current.push(el.current)
+    }
   }
 
-  
+  const handleDelete = (id: number, ObjRef: RefObject<HTMLDivElement>) => {
+    const remove = async () => {
+      gsap.to(ObjRef.current, {duration: 0, pointerEvents: 'none'})
+      gsap.to(ObjRef.current, { duration: 0.5, autoAlpha: 0, ease: 'circ.out' })
+
+      
+      if (ObjRef.current === null) {
+        null
+      }
+      else {
+        const index = allRef.current.indexOf(ObjRef.current)
+        await gsap.to(allRef.current.slice(0, index), {duration: 0.5, translateY: '-100%', ease: 'circ.out'})
+        gsap.to(allRef.current.slice(0, index), {duration: 0, translateY: '0', ease: 'circ.out'})
+      }
+      
+      allRef.current = allRef.current.filter(ref => ref !== ObjRef.current)
+
+      setTransactions(transactions.filter((transaction) => {
+        return transaction.id !== id
+      }))
+    }
+    remove()
+  }
+
+  const InfoRef = useRef<HTMLDivElement>(null)
+  const HeaderRef = useRef<HTMLDivElement>(null)
+  const TransactionHistoryRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    gsap.from(HeaderRef.current, { duration: 2, autoAlpha: 0, translateY: '-100%', ease: 'circ.out' })
+    gsap.from(InfoRef.current, { duration: 2, autoAlpha: 0, translateX: '-25%', ease: 'circ.out' })
+    gsap.from(TransactionHistoryRef.current, { duration: 2, autoAlpha: 0, translateY: '25%', ease: 'circ.out' })
+  }, [])
 
   return (
-      <div className="App">
-        <Header />
-        <Grid className={classes.root} container alignItems='flex-start' justify='space-around'>
-          <Grid item className="balance-container" style={{height: '100%'}}>
-            <Info transactions={transactions} setTransactions={setTransactions} />
-          </Grid>
-          <Grid item>
-            <TransactionHistory transactions={transactions} handleDelete={handleDelete} />
-          </Grid>
+    <div className="App">
+      <Header HeaderRef={HeaderRef} />
+      <Grid className={classes.root} container alignItems='flex-start' justify='space-around'>
+        <Grid item className="balance-container" style={{height: '100%'}}>
+          <Info transactions={transactions} setTransactions={setTransactions} InfoRef={InfoRef} allRef={allRef} />
         </Grid>
-      </div>
+        <Grid item>
+          <TransactionHistory addToRef={addToRef} transactions={transactions} handleDelete={handleDelete} TransactionHistoryRef={TransactionHistoryRef} />
+        </Grid>
+      </Grid>
+    </div>
   );
 }
 
