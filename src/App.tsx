@@ -11,6 +11,8 @@ import { TransactionType } from './Types'
 
 import { gsap } from 'gsap'
 
+import firebase from './firebase'
+
 const useStyles = makeStyles({
   root: {
     flexGrow: 1,
@@ -19,6 +21,14 @@ const useStyles = makeStyles({
 })
 
 function App() {
+  const messaging = firebase.messaging()
+  messaging.requestPermission().then(() => {
+    return messaging.getToken()
+  }).then((token) => {
+    console.log('token', token)
+  })
+
+
   const classes = useStyles()
 
   const [transactions, setTransactions] = useState<TransactionType[]>([
