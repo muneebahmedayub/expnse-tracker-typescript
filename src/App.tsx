@@ -16,7 +16,8 @@ import firebase from './firebase'
 const useStyles = makeStyles({
   root: {
     flexGrow: 1,
-    height: '100vh'
+    height: '90vh',
+    overflow: "scroll"
   }
 })
 
@@ -30,6 +31,7 @@ function App() {
 
 
   const classes = useStyles()
+
 
   const [transactions, setTransactions] = useState<TransactionType[]>([
    
@@ -79,8 +81,8 @@ function App() {
   return (
     <div className="App">
       <Header HeaderRef={HeaderRef} />
-      <Grid className={classes.root} container justify='space-around'>
-        <Grid item>
+      <Grid className={classes.root} container alignItems='flex-start' justify='space-around'>
+        <Grid item className="balance-container" style={{height: '100%'}}>
           <Info transactions={transactions} setTransactions={setTransactions} InfoRef={InfoRef} allRef={allRef} />
         </Grid>
         <Grid item>
